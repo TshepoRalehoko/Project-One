@@ -32,7 +32,7 @@ header-includes:
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, comment = NA, fig.height = 4.5, fig.width = 5, collapse = TRUE, results = 'hide', out.width = '55%', out.height = '55%',
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE, comment = NA, fig.height = 4.5, fig.width = 5, collapse = TRUE, out.width = '55%', out.height = '55%',
                       error = FALSE, message = FALSE)
 ```
 
@@ -119,7 +119,7 @@ setwd(file.path("C:", "Users", "Tshepo Ralehoko", "Downloads",
 credit <- read.table(file = file.path("C:", "Users","Tshepo Ralehoko", "Downloads", 
                                      "Data Science", "Data Science - R", 
                                      "Projects", "Credit data Project 1",
-                                     "Assignment_1_Data.txt"),
+                                     "data.txt"),
                                      header = TRUE, sep = '')
 
 
@@ -1072,7 +1072,7 @@ geom_boxplot()
 
 
 
-```{r}
+```{r, results = 'hide'}
 #linear regression model
 
 #this library is for the variance inflation factor function
@@ -1117,33 +1117,4 @@ step_backward$anova
 
 ```
 
-
-\subsubsection{Logistic Regression}
-
-\subsubsection{Linear Discriminant Analysis}
-
-\subsubsection{K-Nearest Neighbors}
-
-\subsubsection{Regression Trees}
-
-\subsubsection{Bagging}
-
-\subsubsection{Random Forests}
-
-\subsubsection{Boosting}
-
-\subsubsection{Support Vector Machines}
-
-\subsubsection{Neural Networks}
-
-
-\section{Results}
-
-\section{Discussion}
-
-\section{Conclusions}
-
-\section{Recommendations}
-
-\section{Appendix}
 
