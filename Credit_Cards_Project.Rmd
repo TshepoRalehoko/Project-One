@@ -61,7 +61,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE, comment = NA, f
 \section*{Acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}
 
-\indent I want to acknowledge the useful of the book \href{https://web.stanford.edu/~hastie/ElemStatLearn/}{Elements of Statistical Learning} for the theory that is related to the results herein, analysis and interpretation thereof. The book has been a great resource for further developing my statistical computing skills in \textit{R} and data analysis in general. Furthermore, many thanks to various platforms which are easily accessible, and with great provision and support in \textit{R} related content for data analysis.
+\indent I want to acknowledge the usefulness of the book \href{https://web.stanford.edu/~hastie/ElemStatLearn/}{Elements of Statistical Learning} for the theory that is related to the results herein, analysis and interpretation thereof. The book has been a great resource for further developing my statistical computing skills in \textit{R} and data analysis in general. Furthermore, many thanks to various platforms which are easily accessible, and with great provision and support in \textit{R} related content for data analysis.
 
 \newpage
 
@@ -122,6 +122,13 @@ credit <- read.table(file = file.path("C:", "Users","Tshepo Ralehoko", "Download
                                      "data.txt"),
                                      header = TRUE, sep = '')
 
+#necessary libraries
+library(RColorBrewer)
+library(xtable)
+library(e1071)
+library(ggplot2)
+library(car)
+library(leaps)
 
 ```
 
@@ -129,25 +136,24 @@ credit <- read.table(file = file.path("C:", "Users","Tshepo Ralehoko", "Download
 \section{Introduction}
 
 
-\indent This is a personal project. The project deals with the well-known \textit{Credit} dataset. A brief description of the dataset shall follow. The aim of the project is to build the best model for predicting the output variable using, all or a subset of the features. On that note, we wish to indicate that the dataset we shall be dealing with falls into the \textit{supervised learning} paradigm. For assessing the accuracy of the models in predicting the corresponding \textit{target} variable, we will generate and utilize the necessary \textit{goodness of fit} statistics. We will also keep an eye of the \textit{bias-variance trade-off} during the model building process. This concept is explained in detail under the \textbf{Data Modelling} section. Furthermore, we want to underscore that the project is for learning purposes, and as a result, any constructive input is appreciated.
+\indent This is a personal project. The project deals with the 'popular' \textit{Credit} dataset. It is not easy to find on the internet. A brief description of the dataset shall follow. The aim of the project is to build the best model for predicting the output variable using, all or a subset of the features. On that note, we wish to indicate that the dataset we shall be dealing with falls into the \textit{supervised learning} paradigm. For assessing the accuracy of the models in predicting the corresponding \textit{target} variable, we will generate and utilize the necessary \textit{goodness of fit} statistics. We will also keep an eye of the \textit{bias-variance trade-off} during the model building process. This concept is explained in detail under the \textbf{Data Modelling} section. Furthermore, we want to underscore that the project is for learning purposes, and as a result, any constructive input is appreciated.
 
 \vspace{3pt}
 
 \indent For achieving the aim of the project, our dataset will be randomly split into a \textit{training} and \textit{test} set. We will sometimes refer to the latter set as the \textit{validation} set. This method is widely used for validating the accuracy and performance of the model in predicting observations that were not used in building or training the model (out-of-sample observations).
 
-\vspace{3pt}
 
-\indent The next section will take a look at \textbf{Data Description and Data Summary}. It will use various functions to study the structure of the dataset; the variables that make up the dataset and summary statistics. The \textbf{Data Preparation} section is dedicated to addressing any issues that we might have discovered in the preceding section, and taking the corrective steps to prepare the dataset for model building and analysis.
-
-
-
-\section{Data Description and Data Summary}
+\subsection{Data Summary}
 
 \indent The dataset has \textit{11} predictor variables, and each of the variables contains \textit{400} observations. The names of the features are: \textcolor{magenta}{Income} (in thousands of dollars), \textcolor{magenta}{Limit} (credit limit), \textcolor{magenta}{Rating} (credit rating), \textcolor{magenta}{Cards} (number of credit cards), \textcolor{magenta}{Age}, \textcolor{magenta}{Education} (years of education), \textcolor{magenta}{Gender}, \textcolor{magenta}{Student} (student status), \textcolor{magenta}{Married} (marital status) and \textcolor{magenta}{Ethnicity} (Caucasian, African American or Asian). The class of the variables is split among \textit{integer}, \textit{factor} and \textit{numeric} variables. The dataset has complete cases. For convenience, we will sometimes use the variable names (which provide less description about the variables) instead of the relevant description of the variables. For instance, we might use \textcolor{magenta}{Education} to refer to "the number of years of education".
 
+\subsection{Project Outline}
 
-\vspace{3pt}
+\indent The next section will take a deeper look at the *dataset*, *data modelling*, *analysis* and *results*. It will explore the predictor variables, build models, include an analysis of the models and end off with results. The last two sections will be the *conclusion* of the results followed by an *appendix* that will consitute mostly the *R* code. 
 
+
+\section{Body}
+\subsection{Data}
 
 \indent The results from this section are very insightful, and allows the user to pursue other data mining techniques on the dataset that are beyond the scope covered by the project. This is done to accommodate any further analysis that may be of interest on the dataset in the future. I want to reiterate that, with this project, I desire to take a pragmatic approach and learn new skills beyond what I have gathered from the classroom environment during the course of my studies in Data Science. We now focus our attention to the plots, figures and tables from the \textit{R} output.
 
@@ -297,11 +303,13 @@ Balance & 32.14 & 5.67 & 13.43 & 3.75 & 38.79 & 35.04 & 9.89 & 11.78 & 15.24 & 5
 \end{table}
 
 
-\indent In models where there is an underlying assumption that is imposed on the distribution of the preditor variables, the probability density curve of the predictor variables would be important. To be fully informed about idea about the distribution of our random variables, both its probability distribution and the respective statistics in table \ref{table: distribution_statistics} would play a vital role. However, we are not going to necessary use this information in this project.
+\indent In models where there is an underlying assumption that is imposed on the distribution of the preditor variables, the probability density curve of the predictor variables would be important. To be fully informed about idea about the distribution of our random variables, both its probability distribution and the respective statistics in table \ref{table: distribution_statistics} would play a vital role. However, we are not going to need this information in this project. 
 
 
+\vspace{3.5mm}
 
-\indent Below we have
+
+\indent Below we have the probability distribution curves for each of the variables that are in the dataset. We will also not comment on the distribution of these random variables.
 
 \begin{figure}[H]
 \centering
@@ -475,6 +483,68 @@ Balance & 32.14 & 5.67 & 13.43 & 3.75 & 38.79 & 35.04 & 9.89 & 11.78 & 15.24 & 5
 
 
 
+
+\section{Data Modelling}
+
+\subsection{Models}
+
+\subsubsection{Linear Regression}
+
+
+
+```{r, results = 'hide'}
+
+attach(credit)
+
+
+
+#linear regression model
+
+#the full model
+full_model = lm(Balance~., data = credit)
+
+#the dummy variable assignment (categorical variable)
+
+#student
+contrasts(Student)
+
+#Ethnicity
+contrasts(Ethnicity)
+
+#Gender
+contrasts(Gender)
+
+#Married
+contrasts(Married)
+
+#full model
+full_model
+
+#vif()
+
+#regsubsets
+
+null_model = lm(Balance~1)
+full_model = lm(Balance~., data = credit)
+
+step_backward =step(object = null_model, scope = list(lower = null_model, upper = full_model),
+     scale = 0, direction = c("forward"), k = 2)
+
+names(step_backward)
+names(summary(step_backward))
+
+step_backward$anova
+
+```
+
+
+
+
+
+\section{Appendix}
+\subsection{R Code}
+
+
 ```{r}
 
 #taking a peek at the dataset
@@ -499,9 +569,6 @@ aggr_gender <- aggregate.data.frame(x = credit[, -c(8:11)],
                      FUN = mean, simplify = TRUE)
 aggr_gender
 
-
-#the library with color pallettes that we want to use
-library(RColorBrewer)
 
 #the color pallette for our bar graph
 colors <- brewer.pal(n = 7,name = "Set1")
@@ -639,9 +706,6 @@ skew_num <- matrix(0, nrow = 7, byrow = TRUE)
 kurt_num <- matrix(0, nrow = 7, byrow = TRUE)
 
 
-#the package is helpful for computing kurtosis and skewness
-library(e1071)
-
 #computing the aforementioned statistics
 for (i in 1:length(credit_num)){
   var_num[i] = var(credit_num[, i]) #matrix of variances
@@ -671,8 +735,6 @@ summary_stats <- data.frame(var = var_num, std = sd_num,
 #including rownames to the data frame
 rownames(summary_stats) <- names(credit_num)
 
-#library for creating a table for the results above
-library(xtable)
 
 #table for the results
 print(xtable(summary_stats), type = 'latex',
@@ -694,7 +756,7 @@ aggr_ethnicity <- aggregate(credit_num, by = list(Ethnicity), FUN = mean,
 
 #we are going to plot the estimated probability density function
 #of our numerical variables by gender and student status
-library(ggplot2)
+
 
 #side-by-side (gender + student status)
 
@@ -1063,63 +1125,6 @@ geom_boxplot()
 
 
   
-```
-
-
-\section{Data Preparation}
-
-
-\section{Data Modelling}
-
-\subsection{Models}
-
-\subsubsection{Linear Regression}
-
-
-
-```{r, results = 'hide'}
-#linear regression model
-
-#this library is for the variance inflation factor function
-library(car)
-
-#the full model
-full_model = lm(Balance~., data = credit)
-
-#the dummy variable assignment (categorical variable)
-
-#student
-contrasts(Student)
-
-#Ethnicity
-contrasts(Ethnicity)
-
-#Gender
-contrasts(Gender)
-
-#Married
-contrasts(Married)
-
-#full model
-full_model
-
-#vif()
-
-#regsubsets
-library(leaps)
-
-
-null_model = lm(Balance~1)
-full_model = lm(Balance~., data = credit)
-
-step_backward =step(object = null_model, scope = list(lower = null_model, upper = full_model),
-     scale = 0, direction = c("forward"), k = 2)
-
-names(step_backward)
-names(summary(step_backward))
-
-step_backward$anova
-
 ```
 
 
